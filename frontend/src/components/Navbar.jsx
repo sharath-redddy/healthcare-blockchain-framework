@@ -47,23 +47,28 @@ function Navbar({ activeTab, onSelectTab, connectedWallet, onWalletConnected }) 
           className={`nav-tab-btn ${activeTab === 'patient' ? 'active' : ''}`}
           onClick={() => onSelectTab('patient')}
         >
-          👤 Patient Portal
+          <span>👤</span> Patient Portal
         </button>
         <button
           className={`nav-tab-btn ${activeTab === 'doctor' ? 'active' : ''}`}
           onClick={() => onSelectTab('doctor')}
         >
-          🩺 Doctor Portal
+          <span>🩺</span> Doctor Portal
         </button>
         <button
           className={`nav-tab-btn ${activeTab === 'admin' ? 'active' : ''}`}
           onClick={() => onSelectTab('admin')}
         >
-          🏥 Hospital Admin
+          <span>🏥</span> Hospital Admin
         </button>
       </div>
 
       <div className="navbar-actions">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '0.35rem 0.75rem', borderRadius: '9999px' }}>
+          <span className="wallet-status-dot online"></span>
+          <span style={{ fontSize: '0.74rem', fontWeight: '700', color: '#047857', letterSpacing: '0.03em' }}>POLYGON L2</span>
+        </div>
+
         {connectedWallet ? (
           <div className="wallet-connected-pill" title={connectedWallet}>
             <span className="wallet-status-dot online"></span>

@@ -1,59 +1,83 @@
 /* =========================================================
    Healthcare Blockchain Framework — Global Design System
-   Premium dark-mode-first, glassmorphism UI
-   Google Fonts: Inter + JetBrains Mono
+   Bright, Modern, High-Energy Healthcare & Web3 Theme
+   Google Fonts: Plus Jakarta Sans, Outfit, JetBrains Mono
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 /* ---------- CSS Custom Properties ---------- */
 :root {
-  --bg-base:          #0a0e1a;
-  --bg-surface:       #0f1629;
-  --bg-card:          rgba(255, 255, 255, 0.04);
-  --bg-card-hover:    rgba(255, 255, 255, 0.07);
-  --bg-glass:         rgba(15, 22, 41, 0.85);
+  /* Surface & Canvas Colors (Bright & Luminous) */
+  --bg-base:          #f8fafc;
+  --bg-surface:       #ffffff;
+  --bg-surface-soft:  #f1f5f9;
+  --bg-card:          #ffffff;
+  --bg-card-hover:    #f8faff;
+  --bg-glass:         rgba(255, 255, 255, 0.92);
 
-  --brand-primary:    #4f8ef7;
-  --brand-secondary:  #7c5cfc;
-  --brand-accent:     #00d4aa;
-  --brand-danger:     #f76f6f;
-  --brand-warning:    #f7b944;
-  --brand-success:    #4fca8c;
+  /* Vibrant Healthcare & Crypto Brand Colors */
+  --brand-primary:    #2563eb;
+  --brand-primary-hover: #1d4ed8;
+  --brand-secondary:  #7c3aed;
+  --brand-secondary-hover: #6d28d9;
+  --brand-accent:     #06b6d4;
+  --brand-accent-hover: #0891b2;
+  --brand-danger:     #ef4444;
+  --brand-danger-hover: #dc2626;
+  --brand-warning:    #f59e0b;
+  --brand-success:    #10b981;
+  --brand-success-hover: #059669;
 
-  --gradient-brand:   linear-gradient(135deg, #4f8ef7 0%, #7c5cfc 100%);
-  --gradient-success: linear-gradient(135deg, #4fca8c 0%, #00d4aa 100%);
-  --gradient-danger:  linear-gradient(135deg, #f76f6f 0%, #e84393 100%);
-  --gradient-card:    linear-gradient(135deg, rgba(79,142,247,0.07) 0%, rgba(124,92,252,0.07) 100%);
+  /* Bright, Energetic Gradients */
+  --gradient-brand:   linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  --gradient-brand-subtle: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
+  --gradient-accent:  linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --gradient-danger:  linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --gradient-card:    linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --gradient-badge:   linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%);
 
-  --text-primary:     #e8edf7;
-  --text-secondary:   #8892a4;
-  --text-muted:       #556070;
-  --text-inverse:     #0a0e1a;
+  /* High-Contrast Crisp Typography */
+  --text-primary:     #0f172a;
+  --text-secondary:   #334155;
+  --text-muted:       #64748b;
+  --text-light:       #94a3b8;
+  --text-inverse:     #ffffff;
 
-  --border-subtle:    rgba(255, 255, 255, 0.07);
-  --border-card:      rgba(255, 255, 255, 0.10);
-  --border-brand:     rgba(79, 142, 247, 0.35);
-  --border-focus:     rgba(79, 142, 247, 0.8);
+  /* Modern Refined Borders */
+  --border-subtle:    #e2e8f0;
+  --border-card:      #cbd5e1;
+  --border-brand:     rgba(37, 99, 235, 0.3);
+  --border-focus:     #2563eb;
 
-  --shadow-card:      0 4px 24px rgba(0, 0, 0, 0.4);
-  --shadow-navbar:    0 2px 32px rgba(0, 0, 0, 0.5);
-  --shadow-btn:       0 4px 16px rgba(79, 142, 247, 0.35);
+  /* Multi-Tier Soft 3D Shadows */
+  --shadow-sm:        0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-card:      0 4px 6px -1px rgba(15, 23, 42, 0.04), 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(226, 232, 240, 0.8);
+  --shadow-card-hover: 0 16px 32px -4px rgba(37, 99, 235, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(37, 99, 235, 0.25);
+  --shadow-navbar:    0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 1px 3px 0 rgba(15, 23, 42, 0.03);
+  --shadow-btn:       0 4px 14px rgba(37, 99, 235, 0.32);
+  --shadow-btn-hover: 0 8px 22px rgba(37, 99, 235, 0.45);
 
-  --radius-sm:        6px;
+  /* Geometry & Radii */
+  --radius-xs:        4px;
+  --radius-sm:        8px;
   --radius-md:        12px;
   --radius-lg:        18px;
   --radius-xl:        24px;
   --radius-full:      9999px;
 
-  --transition-fast:  0.15s ease;
-  --transition-base:  0.25s ease;
-  --transition-slow:  0.4s ease;
+  /* Transitions */
+  --transition-fast:  0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base:  0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow:  0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
-  --font-sans:        'Inter', system-ui, -apple-system, sans-serif;
+  /* Typography */
+  --font-sans:        'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display:     'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-mono:        'JetBrains Mono', ui-monospace, 'Courier New', monospace;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 /* ---------- Reset ---------- */
@@ -75,10 +99,21 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Luminous multi-orb ambient glow */
+  background-color: #f8fafc;
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(79,142,247,0.12) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(124,92,252,0.08) 0%, transparent 70%);
+    radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.10) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(124, 58, 237, 0.10) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 60%),
+    radial-gradient(at 80% 50%, rgba(6, 182, 212, 0.07) 0px, transparent 50%);
   background-attachment: fixed;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--text-primary);
 }
 
 input, select, button, textarea {
