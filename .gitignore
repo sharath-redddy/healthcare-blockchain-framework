@@ -1,0 +1,45 @@
+# ===== Dependencies =====
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+blockchain/node_modules/
+
+# ===== Environment / Secrets =====
+.env
+.env.local
+.env.*.local
+frontend/.env
+backend/.env
+blockchain/.env
+# Never commit real private keys, seed phrases, or API keys.
+
+# ===== Build Output =====
+frontend/dist/
+frontend/build/
+backend/dist/
+
+# ===== Module 6: local mock-IPFS storage (runtime-generated, not source) =====
+backend/storage/mock-ipfs/
+
+# ===== Hardhat / Blockchain =====
+blockchain/cache/
+blockchain/artifacts/
+blockchain/typechain/
+blockchain/typechain-types/
+blockchain/coverage/
+blockchain/coverage.json
+
+# ===== Logs =====
+*.log
+npm-debug.log*
+logs/
+
+# ===== OS / Editor =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ===== Misc =====
+*.pem
+*.key

@@ -1,0 +1,17 @@
+{
+  "name": "healthcare-blockchain",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Solidity smart contracts (Hardhat) for patient-controlled healthcare access management",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "node": "hardhat node"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "2.0.8",
+    "@nomicfoundation/hardhat-ethers": "3.0.8",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "2.26.5"
+  }
+}

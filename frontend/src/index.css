@@ -1,0 +1,86 @@
+/* =========================================================
+   Healthcare Blockchain Framework — Global Design System
+   Premium dark-mode-first, glassmorphism UI
+   Google Fonts: Inter + JetBrains Mono
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ---------- CSS Custom Properties ---------- */
+:root {
+  --bg-base:          #0a0e1a;
+  --bg-surface:       #0f1629;
+  --bg-card:          rgba(255, 255, 255, 0.04);
+  --bg-card-hover:    rgba(255, 255, 255, 0.07);
+  --bg-glass:         rgba(15, 22, 41, 0.85);
+
+  --brand-primary:    #4f8ef7;
+  --brand-secondary:  #7c5cfc;
+  --brand-accent:     #00d4aa;
+  --brand-danger:     #f76f6f;
+  --brand-warning:    #f7b944;
+  --brand-success:    #4fca8c;
+
+  --gradient-brand:   linear-gradient(135deg, #4f8ef7 0%, #7c5cfc 100%);
+  --gradient-success: linear-gradient(135deg, #4fca8c 0%, #00d4aa 100%);
+  --gradient-danger:  linear-gradient(135deg, #f76f6f 0%, #e84393 100%);
+  --gradient-card:    linear-gradient(135deg, rgba(79,142,247,0.07) 0%, rgba(124,92,252,0.07) 100%);
+
+  --text-primary:     #e8edf7;
+  --text-secondary:   #8892a4;
+  --text-muted:       #556070;
+  --text-inverse:     #0a0e1a;
+
+  --border-subtle:    rgba(255, 255, 255, 0.07);
+  --border-card:      rgba(255, 255, 255, 0.10);
+  --border-brand:     rgba(79, 142, 247, 0.35);
+  --border-focus:     rgba(79, 142, 247, 0.8);
+
+  --shadow-card:      0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-navbar:    0 2px 32px rgba(0, 0, 0, 0.5);
+  --shadow-btn:       0 4px 16px rgba(79, 142, 247, 0.35);
+
+  --radius-sm:        6px;
+  --radius-md:        12px;
+  --radius-lg:        18px;
+  --radius-xl:        24px;
+  --radius-full:      9999px;
+
+  --transition-fast:  0.15s ease;
+  --transition-base:  0.25s ease;
+  --transition-slow:  0.4s ease;
+
+  --font-sans:        'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:        'JetBrains Mono', ui-monospace, 'Courier New', monospace;
+
+  color-scheme: dark;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(79,142,247,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(124,92,252,0.08) 0%, transparent 70%);
+  background-attachment: fixed;
+}
+
+input, select, button, textarea {
+  font-family: var(--font-sans);
+}
