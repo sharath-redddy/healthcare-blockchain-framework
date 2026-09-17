@@ -87,7 +87,7 @@ A research-grade full-stack decentralized healthcare framework empowering patien
 
 ### 2. Clone & Inspect Workspace
 ```powershell
-cd healthcare-blockchain-framework4
+cd healthcare-blockchain-framework
 ```
 
 ### 3. Backend Setup & Test Suite
