@@ -17,6 +17,7 @@ function App() {
         onSelectTab={setActiveTab}
         connectedWallet={connectedWallet}
         onWalletConnected={setConnectedWallet}
+        onWalletDisconnected={() => setConnectedWallet(null)}
       />
 
       <main className="app-main-content">

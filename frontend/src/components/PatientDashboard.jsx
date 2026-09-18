@@ -1,8 +1,9 @@
 // Module 3, 4, 5, 6, 9, 12, 13: Enhanced Patient Portal
 // Full patient-centric workflow:
 // - Identity & wallet management
-// - AES-256 encrypted medical record uploads to IPFS
-// - Patient-controlled access granting & revoking for doctors
+// - AES-256 encrypted medical record uploads to IPFS (Stage 1)
+// - MetaMask on-chain record registration via addRecord(cid) (Stage 2)
+// - Patient-controlled MetaMask-signed grant/revoke access for doctors
 // - Decrypted download of their own records
 // - Immutable audit trail viewing
 
@@ -22,6 +23,13 @@ import {
 } from '../api/backend';
 import { ROLES } from '../constants/roles';
 import AuditView from './AuditView';
+import WalletConnect from './WalletConnect';
+import {
+  isMetaMaskInstalled,
+  addRecordOnChain,
+  grantAccessOnChain,
+  revokeAccessOnChain,
+} from '../services/web3Service';
 
 function formatSize(bytes) {
   if (bytes < 1024) return `${bytes} B`;
@@ -181,11 +189,45 @@ function PatientDashboard({ connectedWallet }) {
     setBusy(true);
     setStatusMessage(null);
     try {
+      // ── Stage 1: Off-chain — AES-256 encryption + IPFS upload ──────────
+      setStatusMessage('🔒 Stage 1/2: Encrypting file and uploading to IPFS...');
+      setStatusType('info');
       const record = await uploadRecord({ patientId: selectedPatientId, file });
-      setStatusType('success');
-      setStatusMessage(
-        `Uploaded "${record.originalFilename}" — AES-256 encrypted and stored in ${record.isMockIpfs ? 'local mock IPFS storage' : 'IPFS'} (CID: ${record.cid}).`
-      );
+
+      // ── Stage 2: On-chain — MetaMask signs addRecord(cid) ──────────────
+      let onChainResult = null;
+      if (isMetaMaskInstalled() && connectedWallet) {
+        setStatusMessage(
+          `✅ Stage 1 complete (CID: ${record.cid.slice(0, 14)}...). ` +
+          `🔗 Stage 2/2: Please confirm the MetaMask transaction to register on-chain...`
+        );
+        setStatusType('info');
+        try {
+          onChainResult = await addRecordOnChain(record.cid);
+          setStatusType('success');
+          setStatusMessage(
+            `✅ Both stages complete! File encrypted → IPFS (CID: ${record.cid.slice(0, 14)}...) → ` +
+            `On-chain record #${onChainResult.recordId || '?'} (tx: ${onChainResult.txHash.slice(0, 10)}...)`
+          );
+        } catch (chainErr) {
+          // Stage 2 failed — but Stage 1 succeeded. Record still exists in backend.
+          setStatusType('success');
+          setStatusMessage(
+            `✅ File encrypted & uploaded to IPFS (CID: ${record.cid.slice(0, 14)}...). ` +
+            `⚠ On-chain registration skipped: ${chainErr.message}. ` +
+            `Connect MetaMask and register on-chain from the records tab.`
+          );
+        }
+      } else {
+        setStatusType('success');
+        setStatusMessage(
+          `✅ File encrypted & uploaded to ${
+            record.isMockIpfs ? 'local mock IPFS storage' : 'IPFS'
+          } (CID: ${record.cid}). ` +
+          `Connect MetaMask to complete on-chain registration (Stage 2).`
+        );
+      }
+
       setFile(null);
       await loadPatientData(selectedPatientId);
       setActiveTab('records');
@@ -201,9 +243,34 @@ function PatientDashboard({ connectedWallet }) {
     setBusy(true);
     setStatusMessage(null);
     try {
-      const res = await grantAccess({ patientId: selectedPatientId, providerId: selectedProviderId });
-      setStatusType('success');
-      setStatusMessage(`Access granted on-chain (tx: ${res.txHash}). Doctor can now retrieve encrypted records.`);
+      // Try MetaMask on-chain grant first if wallet connected
+      const selectedProvider = providers.find((p) => p.id === selectedProviderId);
+      if (isMetaMaskInstalled() && connectedWallet && selectedProvider?.walletAddress) {
+        setStatusMessage('🦊 Please confirm the grant access transaction in MetaMask...');
+        setStatusType('info');
+        try {
+          const chainResult = await grantAccessOnChain(selectedProvider.walletAddress);
+          // Also update backend record for audit trail
+          await grantAccess({ patientId: selectedPatientId, providerId: selectedProviderId });
+          setStatusType('success');
+          setStatusMessage(
+            `✅ Access granted on-chain (tx: ${chainResult.txHash.slice(0, 12)}...). Doctor can now retrieve encrypted records.`
+          );
+        } catch (chainErr) {
+          // Fallback to backend-only grant (relay wallet)
+          const res = await grantAccess({ patientId: selectedPatientId, providerId: selectedProviderId });
+          setStatusType('success');
+          setStatusMessage(
+            `Access granted via relay (tx: ${res.txHash}). ` +
+            `⚠ MetaMask grant failed: ${chainErr.message}`
+          );
+        }
+      } else {
+        // No MetaMask or no provider wallet — use backend relay
+        const res = await grantAccess({ patientId: selectedPatientId, providerId: selectedProviderId });
+        setStatusType('success');
+        setStatusMessage(`Access granted on-chain (tx: ${res.txHash}). Doctor can now retrieve encrypted records.`);
+      }
       await checkAccessStatus();
       await loadPatientData(selectedPatientId);
     } catch (err) {
@@ -218,9 +285,30 @@ function PatientDashboard({ connectedWallet }) {
     setBusy(true);
     setStatusMessage(null);
     try {
-      const res = await revokeAccess({ patientId: selectedPatientId, providerId: selectedProviderId });
-      setStatusType('success');
-      setStatusMessage(`Access revoked on-chain (tx: ${res.txHash}). Doctor can no longer retrieve records.`);
+      const selectedProvider = providers.find((p) => p.id === selectedProviderId);
+      if (isMetaMaskInstalled() && connectedWallet && selectedProvider?.walletAddress) {
+        setStatusMessage('🦊 Please confirm the revoke access transaction in MetaMask...');
+        setStatusType('info');
+        try {
+          const chainResult = await revokeAccessOnChain(selectedProvider.walletAddress);
+          await revokeAccess({ patientId: selectedPatientId, providerId: selectedProviderId });
+          setStatusType('success');
+          setStatusMessage(
+            `✅ Access revoked on-chain (tx: ${chainResult.txHash.slice(0, 12)}...). Doctor can no longer retrieve records.`
+          );
+        } catch (chainErr) {
+          const res = await revokeAccess({ patientId: selectedPatientId, providerId: selectedProviderId });
+          setStatusType('success');
+          setStatusMessage(
+            `Access revoked via relay (tx: ${res.txHash}). ` +
+            `⚠ MetaMask revoke failed: ${chainErr.message}`
+          );
+        }
+      } else {
+        const res = await revokeAccess({ patientId: selectedPatientId, providerId: selectedProviderId });
+        setStatusType('success');
+        setStatusMessage(`Access revoked on-chain (tx: ${res.txHash}). Doctor can no longer retrieve records.`);
+      }
       await checkAccessStatus();
       await loadPatientData(selectedPatientId);
     } catch (err) {
@@ -260,6 +348,17 @@ function PatientDashboard({ connectedWallet }) {
             Complete sovereignty over your medical records, encryption keys, and healthcare provider access.
           </p>
         </div>
+        {/* MetaMask wallet connection card */}
+        <WalletConnect
+          connectedWallet={connectedWallet}
+          onConnected={(addr) => {
+            // Auto-link the connected wallet to the selected patient
+            if (selectedPatientId && addr) {
+              handleLinkWallet(addr);
+            }
+          }}
+          onDisconnected={() => {}}
+        />
       </div>
 
       {statusMessage && (
@@ -466,9 +565,11 @@ function PatientDashboard({ connectedWallet }) {
       {activeTab === 'upload' && (
         <div className="portal-card">
           <div className="portal-card-header">
-            <h3>Upload & Encrypt Medical File</h3>
+            <h3>Upload &amp; Encrypt Medical File</h3>
             <p className="portal-card-sub">
-              Files are AES-256 encrypted using an ephemeral file key, pinned to IPFS, and registered on Layer-2 blockchain.
+              <strong>Stage 1</strong>: File is AES-256-GCM encrypted on the backend and stored in IPFS.
+              {isMetaMaskInstalled() && connectedWallet && (
+                <> <strong>Stage 2</strong>: MetaMask will then register the CID on-chain via <code>addRecord(cid)</code>.</>)}
             </p>
           </div>
 

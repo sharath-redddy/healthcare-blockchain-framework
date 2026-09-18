@@ -20,7 +20,7 @@ const { MAX_UPLOAD_SIZE_BYTES, MULTIPART_BODY_OVERHEAD_BYTES } = require('./cons
 
 function setCorsHeaders(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
@@ -104,6 +104,17 @@ function createServer() {
     const { pathname } = url;
 
     try {
+      // ---- MetaMask Wallet Authentication (signed-challenge flow) ----
+      if (req.method === 'POST' && pathname === '/api/auth/challenge') {
+        const payload = await readJsonBody(req);
+        return sendJson(res, userRoutes.generateChallenge(payload));
+      }
+
+      if (req.method === 'POST' && pathname === '/api/auth/verify') {
+        const payload = await readJsonBody(req);
+        return sendJson(res, await userRoutes.verifySignature(payload));
+      }
+
       // ---- Module 2: User & Role Management ----
       if (req.method === 'GET' && pathname === '/api/roles') {
         return sendJson(res, userRoutes.listRoles());
